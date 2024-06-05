@@ -15,8 +15,6 @@ uint32_t delayMS;
 String temperature;
 String humidity;
 
-int myFunction(int, int);
-
 void setup()
 {
   Wire.begin(D2, D1); //(SDA, SCL)

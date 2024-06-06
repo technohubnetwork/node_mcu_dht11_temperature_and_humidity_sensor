@@ -107,7 +107,7 @@ void update_lcd_temperature(LiquidCrystal_I2C lcd, float temperature, float humi
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Feels Like: ");
-    lcd.setCursor(0, 1);
+    lcd.setCursor(6, 1);
     lcd.print(String(feels_like_temperature) + "C");
     delay(1500);
 }

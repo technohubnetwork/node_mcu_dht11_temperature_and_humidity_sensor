@@ -3,6 +3,7 @@
 #include <Wire.h>
 #include <DHT.h>
 #include <DHT_U.h>
+#include "sensor_helper.h"
 
 #define DHT_TYPE DHT11
 
@@ -80,6 +81,8 @@ void loop()
   delay(delayMS);
   // Get temperature event and print its value.
   sensors_event_t event;
+  float new_temperature;
+  float new_humidity;
   dht.temperature().getEvent(&event);
   if (isnan(event.temperature))
   {
@@ -89,12 +92,11 @@ void loop()
   {
     if (temperature != String(event.temperature))
     {
-      lcd.setCursor(0, 0);
       temperature = String(event.temperature);
-      lcd.print("Temperature: " + String(event.temperature) + "C");
-      Serial.print(F("Temperature: "));
-      Serial.print(event.temperature);
-      Serial.println(F("°C"));
+      serial_log_temperature(event);
+      lcd.setCursor(0, 0);
+      new_temperature = event.temperature;
+      lcd.print("Temperature: " + String(new_temperature) + "C");
     }
   }
   // Get humidity event and print its value.
@@ -107,12 +109,16 @@ void loop()
   {
     if (humidity != String(event.relative_humidity))
     {
-      lcd.setCursor(0, 1);
       humidity = String(event.relative_humidity);
-      lcd.print("Humidity: " + String(event.relative_humidity) + "%");
-      Serial.print(F("Humidity: "));
-      Serial.print(event.relative_humidity);
-      Serial.println(F("%"));
+      serial_log_humidity(event);
+      new_humidity = event.relative_humidity;
+      lcd.setCursor(0, 1);
+      lcd.print("Humidity: " + String(new_humidity) + "%");
     }
+  }
+
+  if (String(new_temperature) != temperature || String(new_humidity) != humidity)
+  {
+    update_lcd_temperature(lcd, temperature.toFloat(), humidity.toFloat());
   }
 }

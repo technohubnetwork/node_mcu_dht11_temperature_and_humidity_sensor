@@ -36,10 +36,9 @@ void setup()
 void loop()
 {
   delay(delayMS);
+
   // Get temperature event and print its value.
   sensors_event_t event;
-  float new_temperature;
-  float new_humidity;
   dht.temperature().getEvent(&event);
   if (isnan(event.temperature))
   {
@@ -47,15 +46,10 @@ void loop()
   }
   else
   {
-    if (temperature != String(event.temperature))
-    {
-      temperature = String(event.temperature);
-      serial_log_temperature(event);
-      lcd.setCursor(0, 0);
-      new_temperature = event.temperature;
-      lcd.print("Temperature: " + String(new_temperature) + "C");
-    }
+    temperature = String(event.temperature);
+    serial_log_temperature(event);
   }
+
   // Get humidity event and print its value.
   dht.humidity().getEvent(&event);
   if (isnan(event.relative_humidity))
@@ -64,18 +58,9 @@ void loop()
   }
   else
   {
-    if (humidity != String(event.relative_humidity))
-    {
-      humidity = String(event.relative_humidity);
-      serial_log_humidity(event);
-      new_humidity = event.relative_humidity;
-      lcd.setCursor(0, 1);
-      lcd.print("Humidity: " + String(new_humidity) + "%");
-    }
+    humidity = String(event.relative_humidity);
+    serial_log_humidity(event);
   }
 
-  if (String(new_temperature) != temperature || String(new_humidity) != humidity)
-  {
-    update_lcd_temperature(lcd, temperature.toFloat(), humidity.toFloat());
-  }
+  update_lcd_temperature(lcd, temperature.toFloat(), humidity.toFloat());
 }
